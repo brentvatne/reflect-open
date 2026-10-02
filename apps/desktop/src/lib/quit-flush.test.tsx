@@ -64,6 +64,10 @@ interface CloseRequestForTest {
   preventDefault: ReturnType<typeof vi.fn>
 }
 
+/**
+ * Exposes synchronous close prevention separately from async persistence so
+ * tests can assert that the window hides while saves are still pending.
+ */
 function closeCurrentWindow(): CloseRequestForTest {
   const preventDefault = vi.fn()
   const closeRequested = windowMock.closeRequested
@@ -72,6 +76,7 @@ function closeCurrentWindow(): CloseRequestForTest {
   return { completed, preventDefault }
 }
 
+/** Lets tests control save completion order without relying on real I/O timing. */
 function deferred(): { promise: Promise<void>; resolve: () => void } {
   let resolve!: () => void
   const promise = new Promise<void>((resolvePromise) => {

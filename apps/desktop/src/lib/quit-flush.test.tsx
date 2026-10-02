@@ -81,37 +81,43 @@ function deferred(): { promise: Promise<void>; resolve: () => void } {
 }
 
 describe('installQuitFlush', () => {
-  it('hides the main window before pending saves and backup finish', async () => {
-    const documents = deferred()
-    const settings = deferred()
-    const backup = deferred()
-    flushOpenDocuments.mockReturnValueOnce(documents.promise)
-    flushSettings.mockReturnValueOnce(settings.promise)
-    flushBackup.mockReturnValueOnce(backup.promise)
-    const dispose = installQuitFlush()
-    const closeRequest = closeCurrentWindow()
+  it.each(['documents', 'settings'])(
+    'hides the main window before pending saves and backup finish (%s finish first)',
+    async (firstSave) => {
+      const documents = deferred()
+      const settings = deferred()
+      const backup = deferred()
+      flushOpenDocuments.mockReturnValueOnce(documents.promise)
+      flushSettings.mockReturnValueOnce(settings.promise)
+      flushBackup.mockReturnValueOnce(backup.promise)
+      const dispose = installQuitFlush()
+      const closeRequest = closeCurrentWindow()
 
-    try {
-      expect(closeRequest.preventDefault).toHaveBeenCalledOnce()
-      expect(windowMock.hide).toHaveBeenCalledOnce()
-      await vi.waitFor(() => expect(flushOpenDocuments).toHaveBeenCalledOnce())
-      expect(flushSettings).toHaveBeenCalledOnce()
-      expect(flushBackup).not.toHaveBeenCalled()
+      try {
+        expect(closeRequest.preventDefault).toHaveBeenCalledOnce()
+        expect(windowMock.hide).toHaveBeenCalledOnce()
+        await vi.waitFor(() => expect(flushOpenDocuments).toHaveBeenCalledOnce())
+        expect(flushSettings).toHaveBeenCalledOnce()
+        expect(flushBackup).not.toHaveBeenCalled()
 
-      documents.resolve()
-      await documents.promise
-      expect(flushBackup).not.toHaveBeenCalled()
-      settings.resolve()
-      await vi.waitFor(() => expect(flushBackup).toHaveBeenCalledOnce())
-      expect(windowMock.hide).toHaveBeenCalledOnce()
-    } finally {
-      documents.resolve()
-      settings.resolve()
-      backup.resolve()
-      await closeRequest.completed
-      dispose()
-    }
-  })
+        const first = firstSave === 'documents' ? documents : settings
+        const last = firstSave === 'documents' ? settings : documents
+        first.resolve()
+        // Drain promise continuations so an incorrectly unblocked backup can run.
+        await new Promise<void>((resolve) => setTimeout(resolve, 0))
+        expect(flushBackup).not.toHaveBeenCalled()
+        last.resolve()
+        await vi.waitFor(() => expect(flushBackup).toHaveBeenCalledOnce())
+        expect(windowMock.hide).toHaveBeenCalledOnce()
+      } finally {
+        documents.resolve()
+        settings.resolve()
+        backup.resolve()
+        await closeRequest.completed
+        dispose()
+      }
+    },
+  )
 
   it('still flushes if hiding the main window fails', async () => {
     windowMock.hide.mockRejectedValueOnce(new Error('hide failed'))

@@ -1,5 +1,33 @@
 # Changelog
 
+## [0.15.0-beta.5](https://github.com/team-reflect/reflect-open/compare/v0.15.0-beta.4...v0.15.0-beta.5) (2026-10-07)
+
+
+### Bug Fixes
+
+* **tasks:** keep a task edit when ⌘D opens its note before the write lands ([#1446](https://github.com/team-reflect/reflect-open/issues/1446)) ([cb50175](https://github.com/team-reflect/reflect-open/commit/cb501750026c6a42d98f9f0b9ec77a4dee42d30c))
+
+## [0.15.0-beta.4](https://github.com/team-reflect/reflect-open/compare/v0.15.0-beta.3...v0.15.0-beta.4) (2026-10-05)
+
+
+### Features
+
+* add experimental Windows arm64 support ([#1441](https://github.com/team-reflect/reflect-open/issues/1441)) ([d05acd9](https://github.com/team-reflect/reflect-open/commit/d05acd9cc22681ebc52b4b2456cddc2026480569))
+
+## [0.15.0-beta.3](https://github.com/team-reflect/reflect-open/compare/v0.15.0-beta.2...v0.15.0-beta.3) (2026-10-05)
+
+
+### Bug Fixes
+
+* **ios:** mention iPad in the paywall copy ([#1436](https://github.com/team-reflect/reflect-open/issues/1436)) ([3bb44e6](https://github.com/team-reflect/reflect-open/commit/3bb44e6ec34b59653f9c803d21a0781c835d98bf))
+
+## [0.15.0-beta.2](https://github.com/team-reflect/reflect-open/compare/v0.15.0-beta.1...v0.15.0-beta.2) (2026-10-05)
+
+
+### Bug Fixes
+
+* update meowdown ([#1417](https://github.com/team-reflect/reflect-open/issues/1417)) ([b27f4b5](https://github.com/team-reflect/reflect-open/commit/b27f4b56f3deecbf4cc5150c0e602945ae94825c))
+
 ## [0.15.0-beta.1](https://github.com/team-reflect/reflect-open/compare/v0.15.0-beta...v0.15.0-beta.1) (2026-10-02)
 
 
